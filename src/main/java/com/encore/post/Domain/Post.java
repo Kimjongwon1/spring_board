@@ -1,5 +1,6 @@
 package com.encore.post.Domain;
 
+import com.encore.author.Domain.Author;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,14 +22,23 @@ public class Post {
     private String title;
     @Column(nullable = false, length = 3000)
     private String contents;
+    //author_id 는 DB의 컬럼명이다, 별 다른 옵션이 없을시 author의 pk에 fk가 설정
+//    post객체 입장에서는 한사람이 여러개 글을 쓸 수 있으므로 N:1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+//    @JoinColumn(nullable=flase, name="author_email",referencedColumnName="email")
+    private Author author;
     @Column(name = "created_time") //name옵션을 통해 DB의 컬럼명 별도 지정
     @CreationTimestamp
-    private LocalDateTime created_time;
+    private LocalDateTime createdTime;
     @UpdateTimestamp
     private LocalDateTime updatedTime;
-
-    public Post(String title, String contents) {
+    @Builder
+    public Post(String title, String contents, Author author) {
         this.title =title;
         this.contents = contents;
+        this.author = author;
+//        author객체의 posts를 초기화시켜준 후
+//        this.author.getPosts().add(this);
     }
 }

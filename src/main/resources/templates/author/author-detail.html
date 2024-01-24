@@ -40,7 +40,8 @@
         <p>Name : <span th:text="${author.name}"></span></p>
         <p>Email : <span th:text="${author.email}"></span></p>
         <p>Password : <span th:text="${author.password}"></span></p>
-        <p>Create Time : <span th:text="${author.created_time}"></span></p>
+        <p>Create Time : <span th:text="${author.created_time}"></span>
+        <p>작성 글 수 : <span th:text="${author.postsCount}"></span></p>
         <button class="btn btn-primary btn-custom" onclick="toggleUpdateForm()">수정</button>
         <a th:href="@{|/author/delete/${author.id}|}" class="btn btn-danger btn-custom" onclick="return confirmDelete();">삭제</a>
     </div>

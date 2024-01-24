@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class AuthorService {
     private final AuthorRepository authorRepository;
     @Autowired
@@ -31,16 +32,29 @@ public class AuthorService {
             role = Role.ADMIN;
         }
 //        일반생성자방식
-        Author author = new Author(authorSaveReqDto.getName()
-                ,authorSaveReqDto.getEmail()
-                ,authorSaveReqDto.getPassword()
-                ,role);
-//        Author author = Author.builder().name(authorSaveReqDto.getName())
-//                        .email(authorSaveReqDto.getEmail())
-//                                .name(authorSaveReqDto.getName())
-//                                        .password(authorSaveReqDto.getPassword())
-//                                                .build();
+//        Author author = new Author(authorSaveReqDto.getName()
+//                ,authorSaveReqDto.getEmail()
+//                ,authorSaveReqDto.getPassword()
+//                ,role);
+        Author author = Author.builder().name(authorSaveReqDto.getName())
+                .email(authorSaveReqDto.getEmail())
+                .name(authorSaveReqDto.getName())
+                .password(authorSaveReqDto.getPassword())
+                .build();
+
+//        cascade.persist 테스트
+//        부모테이블을 통해 자식테이블에 객체를 동시에 생성
+//        List<Post> posts =new ArrayList<>();
+//        Post post = Post.builder()
+//                    .title("안녕하세요 " + author.getName()+ " 입니다.")
+//                    .contents("cascade 테스트중입니다.")
+//                    .author(author)
+//                    .build();
+//        posts.add(post);
+//        author.setPosts(posts);
+
         authorRepository.save(author);
+
     }
 
     public List<AuthorListResDto> authorList(){
@@ -68,7 +82,8 @@ public class AuthorService {
                             author.getEmail(),
                             author.getPassword(),
                             author.getCreated_time(),
-                            role); // Role 객체를 전달
+                            role,// Role 객체를 전달
+                            author.getPostsCount());
                 })
                 .orElseThrow(() -> new EntityNotFoundException("검색하신 ID의 Member가 없습니다"));
     }
@@ -92,6 +107,9 @@ public class AuthorService {
         updatedDto.setId(author.getId());
         updatedDto.setName(author.getName());
         updatedDto.setPassword(author.getPassword());
+
+
+        //명시적으로 save를 하지않더라도 jpa의 영속성컨텍스트를 통해, 객체에 변경이 감지(더티체킹)되면, 트랜잭션이 완료되는 시점에 save동작
 
         return updatedDto;
     }

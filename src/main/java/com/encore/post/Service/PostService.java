@@ -1,5 +1,7 @@
 package com.encore.post.Service;
 
+import com.encore.author.Domain.Author;
+import com.encore.author.Repository.AuthorRepository;
 import com.encore.post.Domain.Post;
 import com.encore.post.Dto.PostDetailDto;
 import com.encore.post.Dto.PostListResDto;
@@ -12,29 +14,37 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
     private final PostRepository postRepository;
+
+    private final AuthorRepository authorRepository;
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, AuthorRepository authorRepository) {
         this.postRepository = postRepository;
+        this.authorRepository = authorRepository;
     }
 
     public void PostSave(PostSaveReqDto postSaveReqDto) throws IllegalArgumentException {
 //        Post post = new Post(postSaveReqDto.getTitle()
 //                ,postSaveReqDto.getContents());
+       Optional<Author> author = authorRepository.findByEmail(postSaveReqDto.getEmail());
         Post post = Post.builder()
                         .title(postSaveReqDto.getTitle())
                         .contents(postSaveReqDto.getContents())
+                        .author(author.orElse(null))
                         .build();
         postRepository.save(post);
     }
     public List<PostListResDto> postList(){
-        List<Post> postList  = postRepository.findAll();
+        List<Post> postList  = postRepository.findAllByOrderByUpdatedTimeDesc();
         List<PostListResDto> postListResDtos = new ArrayList<>();
         for (Post a : postList) {
-            PostListResDto postListResDto = new PostListResDto(a.getId(),a.getTitle());
+            PostListResDto postListResDto = new PostListResDto(a.getId(),
+                    a.getTitle(),
+                    a.getAuthor() == null?"익명유저":a.getAuthor().getEmail());
             postListResDtos.add(postListResDto);
         }
         return postListResDtos;
@@ -69,7 +79,7 @@ public class PostService {
                             post.getId(),
                             post.getTitle(),
                             post.getContents(),
-                            post.getCreated_time()
+                            post.getCreatedTime()
                             ); // Role 객체를 전달
                 })
                 .orElseThrow(() -> new EntityNotFoundException("검색하신 ID의 Member가 없습니다"));
