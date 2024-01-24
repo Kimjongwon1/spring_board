@@ -1,8 +1,6 @@
 package com.encore.author.Controller;
 
-import com.encore.author.Dto.AuthorDetailDto;
-import com.encore.author.Dto.AuthorListResDto;
-import com.encore.author.Dto.AuthorSaveReqDto;
+import com.encore.author.Dto.*;
 import com.encore.author.Service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,13 +18,28 @@ public class AuthorController {
     public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
-    @PostMapping("/save")
-    @ResponseBody
+    @GetMapping("/create")
+    public String authorcreate(){
+        return "author/author-create";
+    }
+    @PostMapping("/create")
     public String AuthorSave(AuthorSaveReqDto authorSaveReqDto){
         authorService.AuthrSave(authorSaveReqDto);
-        return "ok";
+        return "redirect:/author/list";
     }
-//    @GetMapping("/list")
+
+    @PostMapping("/update")
+    public String authorupdate(AuthorUpdateReqDto authorUpdateReqDto){
+        authorService.authorUpdate(authorUpdateReqDto);
+        return "redirect:/author/detail/" + authorUpdateReqDto.getId();
+    }
+    @GetMapping("/delete/{id}")
+    public String authordelete(@PathVariable Long id) {
+        authorService.authorDelete(id);
+        return "redirect:/author/list";
+    }
+
+    //    @GetMapping("/list")
 //    @ResponseBody
 //    public List<AuthorListResDto> authorList(){
 //     List<AuthorListResDto> authorList = authorService.authorList();
