@@ -55,4 +55,9 @@ public class Author {
     public int getPostsCount() {
         return posts != null ? posts.size() : 0;
     }
+
+//    public void authorUpdate(String name, String password) {
+//        this.name = name;
+//        this.password = password;
+//    }
 }

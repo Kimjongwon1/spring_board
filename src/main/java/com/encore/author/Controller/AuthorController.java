@@ -1,6 +1,10 @@
 package com.encore.author.Controller;
 
-import com.encore.author.Dto.*;
+import com.encore.author.Domain.Author;
+import com.encore.author.Dto.AuthorDetailDto;
+import com.encore.author.Dto.AuthorListResDto;
+import com.encore.author.Dto.AuthorSaveReqDto;
+import com.encore.author.Dto.AuthorUpdateReqDto;
 import com.encore.author.Service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,5 +61,16 @@ public class AuthorController {
       model.addAttribute("author",authorList);
         return "author/author-detail";
     }
-
+//    연관관계가 있는 Author엔티티를 json으로 직렬화를 하게 될 경우
+//    순환참조 이슈 발생하므로 dto 사용필요
+    @GetMapping("/circle/issue/{id}")
+    @ResponseBody
+    public Author circleIssue(@PathVariable Long id){
+        return authorService.findbyId(id);
+    }
+    @GetMapping("/circle/dto/{id}")
+    @ResponseBody
+    public AuthorDetailDto circleIssuetest(@PathVariable Long id){
+        return authorService.authorDetail(id);
+    }
 }

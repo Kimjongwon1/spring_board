@@ -7,4 +7,5 @@ public class AuthorUpdateReqDto {
     private Long id;
     private String name;
     private String password;
+
 }

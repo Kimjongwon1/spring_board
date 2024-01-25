@@ -55,4 +55,12 @@ public class PostController {
         postService.postdelete(id);
         return "redirect:/post/list";
     }
+
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<PostListResDto> searchResults = postService.searchPosts(query);
+        model.addAttribute("postlist", searchResults);
+        model.addAttribute("searchQuery", query);
+        return "/post/post-list"; // 검색 결과를 post-list 페이지로 보냄
+    }
 }

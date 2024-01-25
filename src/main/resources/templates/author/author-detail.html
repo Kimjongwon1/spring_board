@@ -3,80 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 초기에 수정 폼을 숨깁니다 */
-        #update-form {
-            display: none;
-        }
-        .form-control[readonly] {
-            background-color: #e9ecef;
-            opacity: 1;
-        }
-        .card-custom {
-            padding: 15px;
-            border: 1px solid #e3e3e3;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center; /* 카드의 텍스트를 가운데 정렬합니다 */
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .form-label-group {
-            text-align: left; /* 폼 레이블을 왼쪽으로 정렬합니다 */
-            margin-bottom: 10px;
-        }
-        .btn-custom {
-            width: 100px;
-        }
-    </style>
+    <!-- Tailwind CSS 링크 -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:replace="header :: headerFragment"></div>
-<div class="container">
-    <h1 class="text-center my-4">상세보기</h1>
-    <div class="card-custom">
-        <p>Name : <span th:text="${author.name}"></span></p>
-        <p>Email : <span th:text="${author.email}"></span></p>
-        <p>Password : <span th:text="${author.password}"></span></p>
-        <p>Create Time : <span th:text="${author.created_time}"></span>
-        <p>작성 글 수 : <span th:text="${author.postsCount}"></span></p>
-        <button class="btn btn-primary btn-custom" onclick="toggleUpdateForm()">수정</button>
-        <a th:href="@{|/author/delete/${author.id}|}" class="btn btn-danger btn-custom" onclick="return confirmDelete();">삭제</a>
+<div class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto flex items-center justify-between">
+        <a class="text-xl font-bold" href="/">게시판 서비스</a>
+        <ul class="flex">
+            <li class="ml-6"><a class="hover:text-gray-300" href="/author/list">회원관리</a></li>
+            <li class="ml-6"><a class="hover:text-gray-300" href="/author/create">회원가입</a></li>
+            <li class="ml-6"><a class="hover:text-gray-300" href="/post/list">게시글목록</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 mt-8">
+    <h1 class="text-center text-3xl font-bold mb-8">상세보기</h1>
+    <div class="max-w-sm mx-auto bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
+        <p class="text-lg"><span class="font-medium">Name:</span> <span th:text="${author.name}"></span></p>
+        <p class="text-lg"><span class="font-medium">Email:</span> <span th:text="${author.email}"></span></p>
+        <p class="text-lg"><span class="font-medium">Password:</span> <span th:text="${author.password}"></span></p>
+        <p class="text-lg"><span class="font-medium">Create Time:</span> <span th:text="${author.created_time}"></span></p>
+        <p class="text-lg"><span class="font-medium">작성 글 수:</span> <span th:text="${author.postsCount}"></span></p>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="toggleUpdateForm()">수정</button>
+        <a th:href="@{|/author/delete/${author.id}|}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2" onclick="return confirmDelete();">삭제</a>
     </div>
 
-    <div id="update-form" class="card-custom">
+    <div id="update-form" class="max-w-sm mx-auto bg-white p-6 border border-gray-300 rounded-lg shadow-lg mt-4 hidden">
         <form action="/author/update" method="post" class="form-group">
-            <div class="form-label-group">
-                ID <input type="text" name="id" th:value="${author.id}" class="form-control" readonly>
+            <div class="mb-4">
+                ID <input type="text" name="id" th:value="${author.id}" class="form-control bg-gray-200" readonly>
             </div>
-            <div class="form-label-group">
+            <div class="mb-4">
                 Name <input type="text" name="name" th:value="${author.name}" class="form-control">
             </div>
-            <div class="form-label-group">
-                Email <input type="email" name="email" th:value="${author.email}" class="form-control" readonly>
+            <div class="mb-4">
+                Email <input type="email" name="email" th:value="${author.email}" class="form-control bg-gray-200" readonly>
             </div>
-            <div class="form-label-group">
+            <div class="mb-4">
                 Password <input type="password" name="password" th:value="${author.password}" class="form-control">
             </div>
-            <div class="form-label-group">
-                Role <input type="text" name="role" th:value="${author.role}" class="form-control" readonly>
+            <div class="mb-4">
+                Role <input type="text" name="role" th:value="${author.role}" class="form-control bg-gray-200" readonly>
             </div>
-            <button type="submit" class="btn btn-success">수정완료</button>
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">수정완료</button>
         </form>
     </div>
 </div>
+
 <script>
     function toggleUpdateForm() {
         var x = document.getElementById('update-form');
-        if (window.getComputedStyle(x).display === 'none') {
-            x.style.display = 'block';
-        } else {
-            x.style.display = 'none';
-        }
+        x.classList.toggle('hidden');
     }
-function confirmDelete() {
+
+    function confirmDelete() {
         return confirm('삭제하시겠습니까?');
     }
 </script>

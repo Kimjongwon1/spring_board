@@ -120,6 +120,19 @@ public class AuthorService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 저자를 찾을 수 없습니다."));
         authorRepository.delete(author);
     }
+    public Author findbyId(Long id)
+    {Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 저자를 찾을 수 없습니다."));
+        return author;
+    }
 
+    public List<AuthorListResDto> findAll() {
+        List<Author> authors = authorRepository.findAll();
+        List<AuthorListResDto> dtos = new ArrayList<>();
+        for (Author author : authors) {
+            dtos.add(new AuthorListResDto(author.getId(), author.getName(), author.getEmail()));
+        }
+        return dtos;
+    }
 
 }
