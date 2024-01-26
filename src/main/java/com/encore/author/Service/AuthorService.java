@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,6 +26,8 @@ public class AuthorService {
     }
     @Transactional
     public void AuthrSave(AuthorSaveReqDto authorSaveReqDto) throws IllegalArgumentException {
+        Optional<Author> author1 = authorRepository.findByEmail(authorSaveReqDto.getEmail());
+        if(author1.isPresent())throw new IllegalArgumentException("중복이메일");
         Role role = null;
         if(authorSaveReqDto.getRole() == null || authorSaveReqDto.getRole().equals("user")){
             role = Role.USER;

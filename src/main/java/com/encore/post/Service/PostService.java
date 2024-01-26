@@ -9,9 +9,13 @@ import com.encore.post.Dto.PostSaveReqDto;
 import com.encore.post.Dto.PostUpdateReqDto;
 import com.encore.post.Repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,17 +36,50 @@ public class PostService {
     public void PostSave(PostSaveReqDto postSaveReqDto) throws IllegalArgumentException {
 //        Post post = new Post(postSaveReqDto.getTitle()
 //                ,postSaveReqDto.getContents());
+//        Optional<Author> author = authorRepository.findByEmail(postSaveReqDto.getEmail());
+//        Post post = Post.builder()
+//                .title(postSaveReqDto.getTitle())
+//                .contents(postSaveReqDto.getContents())
+//                .author(author.orElse(null))
+//                .build();
+//
+//        // 예약 시간 처리
+//        if (postSaveReqDto.getAppointmentTime() != null && !postSaveReqDto.getAppointmentTime().isEmpty()) {
+//            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+//            LocalDateTime appointmentTime = LocalDateTime.parse(postSaveReqDto.getAppointmentTime(), dateTimeFormatter);
+//            // 여기에 추가적인 예약 시간 관련 로직을 적용할 수 있습니다.
+//            post.setAppointmentTime(appointmentTime);
+//        }
+//
+//        postRepository.save(post);
+
+        //author.authorUpdate("dirtychecking test","1234");
+       // authorRepository.save(author);
+
+        String appointment = null;
+        LocalDateTime appointmentTime=null;
+        // 예약 시간 처리
+        if (postSaveReqDto.getAppointment() != null && !postSaveReqDto.getAppointmentTime().isEmpty()) {
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                appointmentTime = LocalDateTime.parse(postSaveReqDto.getAppointmentTime(), dateTimeFormatter);
+                if(appointmentTime.isBefore(LocalDateTime.now())){
+                    throw new IllegalArgumentException("시간설정 오류");
+                }
+            appointment = "Y";
+        }
+
         Optional<Author> author = authorRepository.findByEmail(postSaveReqDto.getEmail());
         Post post = Post.builder()
                 .title(postSaveReqDto.getTitle())
                 .contents(postSaveReqDto.getContents())
                 .author(author.orElse(null))
+                .appointment(appointment)
+                .appointmentTime(appointmentTime)
                 .build();
 
-        //author.authorUpdate("dirtychecking test","1234");
-       // authorRepository.save(author);
         postRepository.save(post);
     }
+
 
 //    Dirtychecking Test
 //    public void PostSave(PostSaveReqDto postSaveReqDto) {
@@ -67,7 +104,7 @@ public class PostService {
 //            throw new IllegalArgumentException("작성자를 찾을 수 없습니다.");
 //        }
 //    }
-    public List<PostListResDto> postList(){
+    public List<PostListResDto> postList(Pageable pageable){
         List<Post> postList  = postRepository.findAllFetchJoin();
         List<PostListResDto> postListResDtos = new ArrayList<>();
         for (Post a : postList) {
@@ -101,6 +138,18 @@ public class PostService {
 
         return updatedDto;
     }
+    public Page<PostListResDto> postListPaging(Pageable pageable) {
+
+        // 예약된 게시물 중 예약 시간이 현재 시간 이전이거나 "N" 또는 null인 게시물을 가져옴
+        Page<Post> post = postRepository.findByAppointment(null, pageable);
+
+        Page<PostListResDto> postListResDtos = post.map(
+                p -> new PostListResDto(p.getId(), p.getTitle(), p.getAuthor() == null ? "익명유저" : p.getAuthor().getName())
+        );
+        return postListResDtos;
+    }
+
+
     public PostDetailDto postDetail(Long id) throws EntityNotFoundException {
         return postRepository.findById(id)
                 .map(post -> {
@@ -108,7 +157,8 @@ public class PostService {
                             post.getId(),
                             post.getTitle(),
                             post.getContents(),
-                            post.getCreatedTime()
+                            post.getCreatedTime(),
+                            "Y".equals(post.getAppointment()) ? "예약됨" : "예약되지 않음"
                             ); // Role 객체를 전달
                 })
                 .orElseThrow(() -> new EntityNotFoundException("검색하신 ID의 Member가 없습니다"));
@@ -136,6 +186,5 @@ public class PostService {
                 .map(post -> new PostListResDto(post.getId(), post.getTitle(), post.getAuthor() != null ? post.getAuthor().getEmail() : "익명유저"))
                 .collect(Collectors.toList());
     }
-
 
 }

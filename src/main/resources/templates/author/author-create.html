@@ -62,5 +62,16 @@
         </form>
     </div>
 </div>
+<div th:if="${errormessage}">
+    <input class="hidden" id="error" th:value="${errormessage}"></input>
+</div>
+</body>
+<script>
+    let errorMessage = document.getElementById("error").value;
+    console.log(errorMessage);
+    if(errorMessage != null) {
+        alert(errorMessage);
+    }
+</script>
 </body>
 </html>

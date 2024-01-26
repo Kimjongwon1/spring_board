@@ -25,23 +25,66 @@
 <div class="mb-4 flex justify-center items-center">
     <form action="/post/search" method="get" class="flex w-full max-w-lg">
         <input type="text" name="query" class="flex-grow mr-2 p-2 border rounded" placeholder="검색...">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="min-width: 2.5rem;">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             <i class="fas fa-search"></i>
         </button>
     </form>
-    <a href="/post/create" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" style="min-width: 3rem;">
+    <a href="/post/create" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
         <i class="fas fa-pencil-alt text-lg"></i>
     </a>
 </div>
 
-    <div class="flex flex-col items-center space-y-8">
-        <div th:each="post : ${postlist}" class="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4 bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
-            <h5 class="text-lg font-bold mb-4" th:text="${post.title}">게시글 제목</h5>
-            <p class="text-sm text-gray-600 mb-2" th:text="'ID: ' + ${post.id}">게시글 ID</p>
-            <p class="text-sm text-gray-600 mb-2" th:text="'작성자: ' + ${post.author_email}">작성자</p>
-            <a th:href="@{|/post/detail/${post.id}|}" class="text-blue-600 hover:text-blue-900">상세보기</a>
-        </div>
-    </div>
+<div class="container mx-auto px-4">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                제목
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                ID
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                작성자
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                상세보기
+            </th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        <tr th:each="post : ${postList}">
+            <td class="px-6 py-4 whitespace-nowrap" th:text="${post.title}"></td>
+            <td class="px-6 py-4 whitespace-nowrap" th:text="${post.id}"></td>
+            <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author_email}"></td>
+            <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author_email}"></td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <a th:href="@{|/post/detail/${post.id}|}" class="text-blue-600 hover:text-blue-900">상세보기</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="flex justify-center mt-8">
+    <nav aria-label="Page navigation">
+        <ul class="flex list-reset rounded">
+            <!-- 이전 페이지 -->
+            <li th:if="${postList.hasPrevious}">
+                <a class="page-link px-3 py-2 mr-1 border rounded hover:bg-gray-200" th:href="@{/post/list(page=${postList.number - 1})}">이전</a>
+            </li>
+
+            <!-- 페이지 번호 -->
+            <li th:each="pageNum : ${#numbers.sequence(0, postList.totalPages - 1)}"
+                th:classappend="${pageNum == postList.number} ? 'bg-gray-500 text-white' : 'hover:bg-gray-200'">
+                <a class="page-link px-3 py-2 border rounded" th:href="@{/post/list(page=${pageNum})}" th:text="${pageNum + 1}"></a>
+            </li>
+
+            <!-- 다음 페이지 -->
+            <li th:if="${postList.hasNext}">
+                <a class="page-link px-3 py-2 ml-1 border rounded hover:bg-gray-200" th:href="@{/post/list(page=${postList.number + 1})}">다음</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <div class="text-center py-4 mt-10 border-t border-gray-200">

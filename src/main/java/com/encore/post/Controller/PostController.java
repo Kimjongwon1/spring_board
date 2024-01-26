@@ -6,6 +6,9 @@ import com.encore.post.Dto.PostSaveReqDto;
 import com.encore.post.Dto.PostUpdateReqDto;
 import com.encore.post.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
     private final PostService postService;
+
 
     @Autowired
     public PostController(PostService postService) {
@@ -32,11 +36,12 @@ public class PostController {
         return "redirect:/post/list"; //url 리다이렉트
     }
     @GetMapping("/list")
-    public String postlist(PostListResDto postListResDto, Model model){
-      List<PostListResDto> postList = postService.postList();
-      model.addAttribute("postlist",postList);
-      return "/post/post-list";
+    public String postList(Model model, @PageableDefault(size = 5) Pageable pageable) {
+        Page<PostListResDto> postList = postService.postListPaging(pageable); // postService를 통해 페이지 정보를 가져옴
+        model.addAttribute("postList", postList);
+        return "post/post-list"; // Thymeleaf 템플릿 이름
     }
+
 
     @GetMapping("/detail/{id}")
     public String authorDetail(@PathVariable Long id, Model model){
@@ -59,8 +64,8 @@ public class PostController {
     @GetMapping("/search")
     public String searchPosts(@RequestParam(value = "query", required = false) String query, Model model) {
         List<PostListResDto> searchResults = postService.searchPosts(query);
-        model.addAttribute("postlist", searchResults);
+        model.addAttribute("postList", searchResults);
         model.addAttribute("searchQuery", query);
-        return "/post/post-list"; // 검색 결과를 post-list 페이지로 보냄
+        return "post/post-list"; // 검색 결과를 post-list 페이지로 보냄
     }
 }

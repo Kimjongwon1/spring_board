@@ -29,9 +29,36 @@
             <div>
                 이메일 <input type="email" name="email" class="w-full p-2 border rounded">
             </div>
+            <div>
+                예약 날짜 <input type="datetime-local" name="appointmentTime" class="w-full p-2 border rounded">
+            </div>
+            <div>
+                예약 여부:
+                <select name="appointment" class="w-full p-2 border rounded" id="appointmentStatus">
+                    <option value="Y" >예약</option>
+                    <option value="N">비활성화</option>
+                </select>
+            </div>
             <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">등록완료</button>
-        </form>
+                <div th:if="${errormessage}">
+                    <input class="hidden" id="error" th:value="${errormessage}"></input>
+                </div>
+    <script>
+
+     document.querySelector("#appointmentStatus").addEventListener("change", function() {
+         document.querySelector("input[name='appointmentStatus']").value = this.value;
+     });
+
+     let errorMessage = document.getElementById("error").value;
+     console.log(errorMessage);
+     if(errorMessage != null) {
+         alert(errorMessage);
+     }
+            </script>
+            </form>
     </div>
 </div>
+
+
 </body>
 </html>

@@ -33,12 +33,11 @@ public class Post {
     private LocalDateTime createdTime;
     @UpdateTimestamp
     private LocalDateTime updatedTime;
-    @Builder
-    public Post(String title, String contents, Author author) {
-        this.title =title;
-        this.contents = contents;
-        this.author = author;
-//        author객체의 posts를 초기화시켜준 후
-//        this.author.getPosts().add(this);
+    private LocalDateTime appointmentTime;
+    private String appointment;
+
+
+   public void updateAppointment(String appointment){
+        this.appointment = appointment;
     }
 }
