@@ -11,3 +11,12 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: true
+logging:
+#  로그파일 경로와 파일명 지정
+  file:
+    name: logs/app.log
+  level:
+#    trace =  debug <info <error 순서로 로그레벨을 가짐
+#    info로 설정시 trace, debug 로그는 출려하지않음
+    root: info
+

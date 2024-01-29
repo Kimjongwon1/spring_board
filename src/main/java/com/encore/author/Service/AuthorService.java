@@ -34,6 +34,7 @@ public class AuthorService {
         }else {
             role = Role.ADMIN;
         }
+
 //        일반생성자방식
 //        Author author = new Author(authorSaveReqDto.getName()
 //                ,authorSaveReqDto.getEmail()
@@ -123,8 +124,8 @@ public class AuthorService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 저자를 찾을 수 없습니다."));
         authorRepository.delete(author);
     }
-    public Author findbyId(Long id)
-    {Author author = authorRepository.findById(id)
+    public Author findbyId(Long id) {
+        Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 저자를 찾을 수 없습니다."));
         return author;
     }
