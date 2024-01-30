@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-200">
+<!-- 헤더 시작 -->
+<div class="bg-gray-800 text-white">
+    <div class="container mx-auto flex items-center justify-between p-4">
+        <a class="text-xl font-bold" href="/">게시판 서비스</a>
+        <ul class="flex">
+            <li class="ml-6" sec:authorize="hasRole('ROLE_ADMIN')"><a class="hover:text-gray-300" href="/author/list">회원관리</a></li>
+            <li class="ml-6"><a class="hover:text-gray-300" href="/author/create">회원가입</a></li>
+            <li class="ml-6"><a class="hover:text-gray-300" href="/post/list">게시글목록</a></li>
+            <li class="ml-6" th:if="${session.email} == null">
+                <a class="hover:text-gray-300" href="/author/login-page">로그인</a>
+            </li >
+            <li class="ml-6" th:unless="${session.email} == null">
+                <a class="hover:text-gray-300" href="/doLogout">로그아웃</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 헤더 끝 -->
+
+<div class="max-w-sm mx-auto bg-white p-6 border border-gray-300 rounded-lg shadow-lg mt-8">
+    <h1 class="text-center text-3xl font-bold mb-6">로그인</h1>
+    <form action="/doLogin" method="post" class="space-y-4" name="Loginform" onsubmit="return validateForm()">
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" name="email" id="email" class="form-input w-full p-2 border rounded" required>
+        </div>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" name="pw" id="password" class="form-input w-full p-2 border rounded" required>
+        </div>
+        <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">로그인</button>
+    </form>
+</div>
+</body>
+</html>

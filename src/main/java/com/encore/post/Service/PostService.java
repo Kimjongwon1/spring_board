@@ -33,7 +33,7 @@ public class PostService {
         this.authorRepository = authorRepository;
     }
 
-    public void PostSave(PostSaveReqDto postSaveReqDto) throws IllegalArgumentException {
+    public void PostSave(PostSaveReqDto postSaveReqDto, String email) throws IllegalArgumentException {
 //        Post post = new Post(postSaveReqDto.getTitle()
 //                ,postSaveReqDto.getContents());
 //        Optional<Author> author = authorRepository.findByEmail(postSaveReqDto.getEmail());
@@ -55,7 +55,8 @@ public class PostService {
 
         //author.authorUpdate("dirtychecking test","1234");
        // authorRepository.save(author);
-
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        email = authentication.getName();
         String appointment = null;
         LocalDateTime appointmentTime=null;
         // 예약 시간 처리
@@ -68,7 +69,7 @@ public class PostService {
             appointment = "Y";
         }
 
-        Optional<Author> author = authorRepository.findByEmail(postSaveReqDto.getEmail());
+        Optional<Author> author = authorRepository.findByEmail(email);
         Post post = Post.builder()
                 .title(postSaveReqDto.getTitle())
                 .contents(postSaveReqDto.getContents())

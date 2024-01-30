@@ -8,6 +8,7 @@ import com.encore.author.Dto.AuthorSaveReqDto;
 import com.encore.author.Dto.AuthorUpdateReqDto;
 import com.encore.author.Repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -20,9 +21,11 @@ import java.util.Optional;
 @Transactional
 public class AuthorService {
     private final AuthorRepository authorRepository;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, PasswordEncoder passwordEncoder) {
         this.authorRepository = authorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     @Transactional
     public void AuthrSave(AuthorSaveReqDto authorSaveReqDto) throws IllegalArgumentException {
@@ -43,7 +46,8 @@ public class AuthorService {
         Author author = Author.builder().name(authorSaveReqDto.getName())
                 .email(authorSaveReqDto.getEmail())
                 .name(authorSaveReqDto.getName())
-                .password(authorSaveReqDto.getPassword())
+                .role(role)
+                .password(passwordEncoder.encode(authorSaveReqDto.getPassword()))
                 .build();
 
 //        cascade.persist 테스트
@@ -138,5 +142,6 @@ public class AuthorService {
         }
         return dtos;
     }
+
 
 }

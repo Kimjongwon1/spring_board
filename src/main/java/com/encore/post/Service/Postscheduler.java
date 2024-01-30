@@ -5,7 +5,6 @@ import com.encore.post.Repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -25,7 +24,7 @@ public class Postscheduler {
 //    ex)0 0/1 * * * * : 매일 1분마다 0초에 스케쥴링 시작:
 //    ex)0/1 * * * * * :매초마다
 //    ex)0 0 11 * * * : 매일 11시에 스케쥴링
-    @Scheduled(cron = "0 0/1 * * * *")
+    //@Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void postSchedule(){
     System.out.println("==스케쥴러시작===");

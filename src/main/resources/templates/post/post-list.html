@@ -7,13 +7,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="bg-gray-800 text-white p-4">
-    <div class="container mx-auto flex items-center justify-between">
+<div class="bg-gray-800 text-white">
+    <div class="container mx-auto flex items-center justify-between p-4">
         <a class="text-xl font-bold" href="/">게시판 서비스</a>
         <ul class="flex">
             <li class="ml-6"><a class="hover:text-gray-300" href="/author/list">회원관리</a></li>
             <li class="ml-6"><a class="hover:text-gray-300" href="/author/create">회원가입</a></li>
             <li class="ml-6"><a class="hover:text-gray-300" href="/post/list">게시글목록</a></li>
+            <li class="ml-6" th:if="${session.email} == null">
+                <a class="hover:text-gray-300" href="/author/login-page">로그인</a>
+            </li >
+            <li class="ml-6" th:unless="${session.email} == null">
+                <a class="hover:text-gray-300" href="/doLogout">로그아웃</a>
+            </li>
         </ul>
     </div>
 </div>
@@ -56,7 +62,6 @@
         <tr th:each="post : ${postList}">
             <td class="px-6 py-4 whitespace-nowrap" th:text="${post.title}"></td>
             <td class="px-6 py-4 whitespace-nowrap" th:text="${post.id}"></td>
-            <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author_email}"></td>
             <td class="px-6 py-4 whitespace-nowrap" th:text="${post.author_email}"></td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <a th:href="@{|/post/detail/${post.id}|}" class="text-blue-600 hover:text-blue-900">상세보기</a>

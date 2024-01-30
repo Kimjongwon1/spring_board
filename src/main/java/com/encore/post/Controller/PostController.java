@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -31,8 +32,11 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public String createpost(PostSaveReqDto postSaveReqDto) {
-        postService.PostSave(postSaveReqDto);
+    public String createpost(PostSaveReqDto postSaveReqDto, HttpSession req) {
+//       , HttpServletRequest req를 매개변수로 주입한 뒤에
+        // HttpSession session = req.getSession(); 로 꺼내고
+        // session.getAttribute("email");
+        postService.PostSave(postSaveReqDto,req.getAttribute("email").toString());
         return "redirect:/post/list"; //url 리다이렉트
     }
     @GetMapping("/list")
